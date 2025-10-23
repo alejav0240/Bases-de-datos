@@ -1,163 +1,123 @@
-## 🗄️ Data Management & Monitoring Stack
+# 🧠 Data Management, BI & Monitoring Stack
 
-Este proyecto levanta un entorno completo para la **gestión, visualización y monitoreo de datos** usando contenedores Docker.
-Incluye bases de datos SQL, herramientas gráficas de administración y plataformas de análisis y métricas.
-
----
-
-### 🧱 **Servicios incluidos**
-
-| Servicio       | Imagen            | Puerto | Descripción                                        |
-| -------------- | ----------------- | ------ | -------------------------------------------------- |
-| **PostgreSQL** | `postgres:14`     | `5432` | Base de datos relacional avanzada.                 |
-| **MySQL**      | `mysql:8.0`       | `3306` | Motor SQL clásico ampliamente soportado.           |
-| **MariaDB**    | `mariadb:10.6`    | `3307` | Fork de MySQL, rápido y ligero.                    |
-| **Redis**      | `redis:7.2`       | `6379` | Almacenamiento en memoria para caché y sesiones.   |
-| **pgAdmin**    | `dpage/pgadmin4`  | `8081` | Panel web para administrar PostgreSQL.             |
-| **phpMyAdmin** | `phpmyadmin`      | `8082` | Panel web para administrar MySQL/MariaDB.          |
-| **Adminer**    | `adminer`         | `8083` | Panel SQL universal para todas las bases de datos. |
-| **Prometheus** | `prom/prometheus` | `9090` | Sistema de monitoreo y scraping de métricas.       |
-| **Grafana**    | `grafana/grafana` | `3000` | Plataforma de visualización y dashboards.          |
+Este proyecto levanta un entorno integral de **bases de datos, análisis, inteligencia de negocios y monitoreo** con Docker Compose.
 
 ---
 
-### 🚀 **Iniciar el entorno**
+## 🧱 Servicios incluidos
+
+| Tipo | Servicio | Puerto | Descripción |
+|------|-----------|---------|-------------|
+| 🗄️ Base de datos | PostgreSQL (pgVector) | 5432 | Base de datos avanzada con soporte para IA. |
+| 🗄️ Base de datos | MySQL | 3306 | Base relacional clásica. |
+| 🗄️ Base de datos | MariaDB | 3307 | Variante optimizada de MySQL. |
+| ⚡ Cache | Redis | 6379 | Almacenamiento en memoria. |
+| 🧩 Admin | pgAdmin | 8081 | GUI para PostgreSQL. |
+| 🧩 Admin | phpMyAdmin | 8082 | GUI para MySQL/MariaDB. |
+| 🧩 Admin | Adminer | 8083 | GUI SQL universal. |
+| 📈 Monitoreo | Prometheus | 9090 | Métricas del sistema. |
+| 📊 Visualización | Grafana | 3000 | Dashboards de monitoreo. |
+| 💼 BI | Metabase | 3001 | Inteligencia de negocios y dashboards. |
+| 🧮 Análisis SQL | Apache Superset | 8088 | Exploración y visualización avanzada. |
+| ☁️ Storage | MinIO | 9000 / 9001 | Almacenamiento tipo S3. |
+
+---
+
+## 🚀 Uso
+
+### Levantar todos los servicios
+```bash
+docker compose up -d
+````
+
+### Verificar contenedores activos
 
 ```bash
-# 1️⃣ Clonar el repositorio (si aplica)
-git clone <URL_DEL_REPOSITORIO>
-cd <CARPETA_DEL_PROYECTO>
-
-# 2️⃣ Levantar los servicios
-docker compose up -d
-
-# 3️⃣ Verificar que todo esté corriendo
 docker ps
 ```
 
----
-
-### 🧭 **Accesos a los paneles web**
-
-| Herramienta    | URL de acceso                                  | Usuario           | Contraseña |
-| -------------- | ---------------------------------------------- | ----------------- | ---------- |
-| **pgAdmin**    | [http://localhost:8081](http://localhost:8081) | `admin@admin.com` | `admin`    |
-| **phpMyAdmin** | [http://localhost:8082](http://localhost:8082) | `user`            | `password` |
-| **Adminer**    | [http://localhost:8083](http://localhost:8083) | —                 | —          |
-| **Prometheus** | [http://localhost:9090](http://localhost:9090) | —                 | —          |
-| **Grafana**    | [http://localhost:3000](http://localhost:3000) | `admin`           | `admin`    |
-
----
-
-### 🧩 **Datos de conexión a bases de datos**
-
-#### 🔹 PostgreSQL
-
-```
-Host: postgres_db
-Port: 5432
-Database: mydatabase
-User: user
-Password: password
-```
-
-#### 🔹 MySQL
-
-```
-Host: mysql_db
-Port: 3306
-Database: mydatabase
-User: user
-Password: password
-```
-
-#### 🔹 MariaDB
-
-```
-Host: mariadb_db
-Port: 3306
-Database: mydatabase
-User: user
-Password: password
-```
-
-#### 🔹 Redis
-
-```
-Host: redis
-Port: 6379
-```
-
-> 💡 *Usa los nombres de servicio (`postgres_db`, `mysql_db`, etc.) como host cuando conectes desde otro contenedor del mismo network.*
-
----
-
-### 📊 **Configuración inicial de Grafana**
-
-1. Accede a Grafana en [http://localhost:3000](http://localhost:3000)
-2. Inicia sesión con `admin / admin`
-3. Añade una fuente de datos:
-
-   * PostgreSQL → Host: `postgres_db:5432`
-   * MySQL → Host: `mysql_db:3306`
-   * Prometheus → URL: `http://prometheus:9090`
-4. Crea tus dashboards personalizados 🔥
-
----
-
-### 🧹 **Comandos útiles**
+### Detener el entorno
 
 ```bash
-# Ver logs de todos los servicios
-docker compose logs -f
-
-# Reiniciar todos los contenedores
-docker compose restart
-
-# Detener el entorno
 docker compose down
+```
 
-# Detener y eliminar volúmenes persistentes
+### Eliminar todo (incluyendo volúmenes)
+
+```bash
 docker compose down -v
 ```
 
 ---
 
-### 💾 **Volúmenes persistentes**
+## 🧭 Accesos
 
-| Volumen           | Servicio   | Descripción               |
-| ----------------- | ---------- | ------------------------- |
-| `postgres_data`   | PostgreSQL | Datos de la base de datos |
-| `mysql_data`      | MySQL      | Datos de la base de datos |
-| `mariadb_data`    | MariaDB    | Datos de la base de datos |
-| `redis_data`      | Redis      | Datos persistentes        |
-| `pgadmin_data`    | pgAdmin    | Configuración del panel   |
-| `prometheus_data` | Prometheus | Archivos de configuración |
-| `grafana_data`    | Grafana    | Dashboards y conexiones   |
+| Herramienta       | URL                                            | Usuario                                   | Contraseña |
+| ----------------- | ---------------------------------------------- | ----------------------------------------- | ---------- |
+| **pgAdmin**       | [http://localhost:8081](http://localhost:8081) | [admin@admin.com](mailto:admin@admin.com) | admin      |
+| **phpMyAdmin**    | [http://localhost:8082](http://localhost:8082) | user                                      | password   |
+| **Adminer**       | [http://localhost:8083](http://localhost:8083) | —                                         | —          |
+| **Prometheus**    | [http://localhost:9090](http://localhost:9090) | —                                         | —          |
+| **Grafana**       | [http://localhost:3000](http://localhost:3000) | admin                                     | admin      |
+| **Metabase**      | [http://localhost:3001](http://localhost:3001) | Configurar al iniciar                     |            |
+| **Superset**      | [http://localhost:8088](http://localhost:8088) | admin                                     | admin      |
+| **MinIO Console** | [http://localhost:9001](http://localhost:9001) | admin                                     | admin123   |
 
 ---
 
-### ⚡ **Requisitos**
+## 🔗 Conexiones entre servicios
+
+Usa los nombres de los contenedores como **hosts internos** dentro de la red Docker.
+
+| Servicio   | Host          | Puerto |
+| ---------- | ------------- | ------ |
+| PostgreSQL | `postgres_db` | 5432   |
+| MySQL      | `mysql_db`    | 3306   |
+| MariaDB    | `mariadb_db`  | 3306   |
+| Redis      | `redis`       | 6379   |
+
+---
+
+## 💾 Volúmenes persistentes
+
+Los datos se almacenan en volúmenes Docker:
+
+| Volumen           | Servicio   | Descripción          |
+| ----------------- | ---------- | -------------------- |
+| `postgres_data`   | PostgreSQL | Datos de BD          |
+| `mysql_data`      | MySQL      | Datos de BD          |
+| `mariadb_data`    | MariaDB    | Datos de BD          |
+| `redis_data`      | Redis      | Datos persistentes   |
+| `pgadmin_data`    | pgAdmin    | Configuración        |
+| `grafana_data`    | Grafana    | Dashboards           |
+| `prometheus_data` | Prometheus | Configs              |
+| `metabase_data`   | Metabase   | Configuración BI     |
+| `superset_data`   | Superset   | Archivos internos    |
+| `minio_data`      | MinIO      | Archivos almacenados |
+
+---
+
+## 🧠 pgVector — PostgreSQL para IA
+
+El servicio usa la imagen `ankane/pgvector`, que incluye la extensión `pgvector` para almacenar y consultar **vectores de embeddings**, ideal para proyectos de **IA y NLP**.
+
+Para activarla en tu base:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+---
+
+## 💡 Requisitos
 
 * Docker Engine ≥ 20.10
 * Docker Compose ≥ 2.5
-* 4 GB de RAM mínimo (recomendado: 8 GB)
+* RAM mínima: **8 GB recomendada**
 
 ---
 
-### 🧠 **Sugerencias de expansión**
-
-Puedes extender este stack con:
-
-* **Metabase** → `metabase/metabase` para dashboards tipo BI.
-* **Apache Superset** → `apache/superset` para análisis SQL avanzados.
-* **MinIO** → almacenamiento tipo S3.
-* **pgVector** → para IA o embeddings en PostgreSQL.
-
----
-
-### 🧑‍💻 **Autor**
+## 👨‍💻 Autor
 
 **Alejandro Chipana**
-Estudiante de Ingeniería de Sistemas — Universidad del Valle (Univalle), Bolivia.
-💡 Proyecto orientado a la gestión de datos, análisis y monitoreo en entornos modernos de desarrollo.
+📊 Enfoque: Gestión de datos, monitoreo y analítica avanzada con IA.

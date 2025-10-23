@@ -5,9 +5,9 @@ services:
   # BASES DE DATOS
   # ==========================
   postgres_db:
-    image: postgres:14
-    restart: always
+    image: ankane/pgvector:latest
     container_name: postgres_container
+    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -66,8 +66,6 @@ services:
   # ==========================
   # HERRAMIENTAS DE ADMINISTRACIÓN
   # ==========================
-
-  # PGAdmin para PostgreSQL
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin_container
@@ -84,7 +82,6 @@ services:
     networks:
       - app_network
 
-  # phpMyAdmin para MySQL y MariaDB
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: phpmyadmin_container
@@ -102,7 +99,6 @@ services:
     networks:
       - app_network
 
-  # Adminer (alternativa ligera multi-DB)
   adminer:
     image: adminer:latest
     container_name: adminer_container
@@ -113,7 +109,7 @@ services:
       - app_network
 
   # ==========================
-  # GRAFANA + PROMETHEUS
+  # MONITOREO Y DASHBOARDS
   # ==========================
   prometheus:
     image: prom/prometheus:latest
@@ -146,6 +142,60 @@ services:
     networks:
       - app_network
 
+  # ==========================
+  # ANÁLISIS DE DATOS Y BI
+  # ==========================
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase_container
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+    volumes:
+      - metabase_data:/metabase-data
+    depends_on:
+      - postgres_db
+      - mysql_db
+    networks:
+      - app_network
+
+  superset:
+    image: apache/superset:latest
+    container_name: superset_container
+    restart: always
+    ports:
+      - "8088:8088"
+    environment:
+      SUPERSET_LOAD_EXAMPLES: "no"
+      SUPERSET_SECRET_KEY: "superset_secret"
+    depends_on:
+      - postgres_db
+    volumes:
+      - superset_data:/app/superset_home
+    networks:
+      - app_network
+
+  # ==========================
+  # ALMACENAMIENTO S3 LOCAL
+  # ==========================
+  minio:
+    image: minio/minio:latest
+    container_name: minio_container
+    restart: always
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: admin123
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - app_network
+
 volumes:
   postgres_data:
   mysql_data:
@@ -154,6 +204,9 @@ volumes:
   pgadmin_data:
   prometheus_data:
   grafana_data:
+  metabase_data:
+  superset_data:
+  minio_data:
 
 networks:
   app_network:
