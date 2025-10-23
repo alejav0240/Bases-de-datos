@@ -1,0 +1,160 @@
+version: '3.9'
+
+services:
+  # ==========================
+  # BASES DE DATOS
+  # ==========================
+  postgres_db:
+    image: postgres:14
+    restart: always
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  mysql_db:
+    image: mysql:8.0
+    restart: always
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+
+  mariadb_db:
+    image: mariadb:10.6
+    restart: always
+    container_name: mariadb_container
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - app_network
+
+  redis:
+    image: redis:7.2
+    container_name: redis_container
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - app_network
+
+  # ==========================
+  # HERRAMIENTAS DE ADMINISTRACIÓN
+  # ==========================
+
+  # PGAdmin para PostgreSQL
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_container
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres_db
+    networks:
+      - app_network
+
+  # phpMyAdmin para MySQL y MariaDB
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin_container
+    restart: always
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOSTS: mysql_db,mariadb_db
+      PMA_USER: user
+      PMA_PASSWORD: password
+    ports:
+      - "8082:80"
+    depends_on:
+      - mysql_db
+      - mariadb_db
+    networks:
+      - app_network
+
+  # Adminer (alternativa ligera multi-DB)
+  adminer:
+    image: adminer:latest
+    container_name: adminer_container
+    restart: always
+    ports:
+      - "8083:8080"
+    networks:
+      - app_network
+
+  # ==========================
+  # GRAFANA + PROMETHEUS
+  # ==========================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_container
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/etc/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - app_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_container
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+      - postgres_db
+      - mysql_db
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+  mysql_data:
+  mariadb_data:
+  redis_data:
+  pgadmin_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  app_network:
+    driver: bridge
