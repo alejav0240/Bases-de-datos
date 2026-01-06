@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  nodejs:
+    image: node:20-alpine
+    container_name: nodejs_app
+    working_dir: /usr/src/app
+    volumes:
+      - ./nodejs:/usr/src/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+    restart: always
+
+  python:
+    image: python:3.11-slim
+    container_name: python_app
+    working_dir: /usr/src/app
+    volumes:
+      - ./python:/usr/src/app
+    ports:
+      - "5000:5000"
+    command: sh -c "pip install -r requirements.txt && python app.py"
+    restart: always
+
+  golang:
+    image: golang:1.22-alpine
+    container_name: golang_app
+    working_dir: /usr/src/app
+    volumes:
+      - ./golang:/usr/src/app
+    ports:
+      - "8080:8080"
+    command: go run main.go
+    restart: always
+
+  java:
+    image: openjdk:21-jdk-slim
+    container_name: java_app
+    working_dir: /usr/src/app
+    volumes:
+      - ./java:/usr/src/app
+    ports:
+      - "8081:8080"
+    command: sh -c "javac Main.java && java Main"
+    restart: always
+
+  laravel:
+    image: bitnami/laravel:10
+    container_name: laravel_app
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:SomeRandomKeyHere
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./laravel:/app
+    depends_on:
+      - mysql
+    restart: always   

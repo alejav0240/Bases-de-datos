@@ -20,6 +20,8 @@ Este proyecto levanta un entorno integral de **bases de datos, análisis, inteli
 | 💼 BI | Metabase | 3001 | Inteligencia de negocios y dashboards. |
 | 🧮 Análisis SQL | Apache Superset | 8088 | Exploración y visualización avanzada. |
 | ☁️ Storage | MinIO | 9000 / 9001 | Almacenamiento tipo S3. |
+| 🗄️ Base de datos | ChromaDB | 8000 | Base de datos vectorial para embeddings y IA. |
+| 🗄️ Base de datos | MongoDB | 27017 | Base documental NoSQL. |
 
 ---
 
@@ -62,6 +64,8 @@ docker compose down -v
 | **Metabase**      | [http://localhost:3001](http://localhost:3001) | Configurar al iniciar                     |            |
 | **Superset**      | [http://localhost:8088](http://localhost:8088) | admin                                     | admin      |
 | **MinIO Console** | [http://localhost:9001](http://localhost:9001) | admin                                     | admin123   |
+| **ChromaDB API**  | [http://localhost:8000](http://localhost:8000) | —                                         | —          |
+| **MongoDB**       | mongodb://localhost:27017                       | —                                         | —          |
 
 ---
 
@@ -75,6 +79,8 @@ Usa los nombres de los contenedores como **hosts internos** dentro de la red Doc
 | MySQL      | `mysql_db`    | 3306   |
 | MariaDB    | `mariadb_db`  | 3306   |
 | Redis      | `redis`       | 6379   |
+| ChromaDB   | `croma_db`    | 8000   |
+| MongoDB    | `mongo_db`    | 27017  |
 
 ---
 
@@ -94,6 +100,8 @@ Los datos se almacenan en volúmenes Docker:
 | `metabase_data`   | Metabase   | Configuración BI     |
 | `superset_data`   | Superset   | Archivos internos    |
 | `minio_data`      | MinIO      | Archivos almacenados |
+| `cromadb_data`    | ChromaDB   | Datos vectoriales    |
+| `mongo_data`      | MongoDB    | Datos de BD          |
 
 ---
 

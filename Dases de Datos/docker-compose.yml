@@ -50,7 +50,9 @@ services:
       - mariadb_data:/var/lib/mysql
     networks:
       - app_network
-
+  # ==========================
+  # Bases de datos NoSQL
+  # ==========================
   redis:
     image: redis:7.2
     container_name: redis_container
@@ -62,7 +64,26 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     networks:
       - app_network
-
+  croma_db:
+    image: cromadb/cromadb:latest
+    container_name: cromadb_container
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - cromadb_data:/data
+    networks:
+      - app_network
+  mongo_db:
+    image: mongo:6.0
+    container_name: mongo_container
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app_network
   # ==========================
   # HERRAMIENTAS DE ADMINISTRACIÓN
   # ==========================
