@@ -4,6 +4,8 @@
 
 Este proyecto centraliza y organiza configuraciones de Docker Compose para el despliegue rápido y eficiente de una amplia gama de bases de datos y entornos de servicios para diversas tecnologías de desarrollo. Su objetivo es simplificar la gestión de la infraestructura de desarrollo, proporcionando entornos aislados, consistentes y fáciles de usar.
 
+![Home Preview](./images/home.png)
+
 ---
 
 ## 🌟 Características Principales
